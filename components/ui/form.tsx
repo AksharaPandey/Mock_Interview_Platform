@@ -73,11 +73,13 @@ const FormItemContext = React.createContext<FormItemContextValue>(
   {} as FormItemContextValue
 )
 
-function FormItem({ className, ...props }: React.ComponentProps<"div">) {
-  const id = React.useId()
+// Updated FormItem with hydration-safe ID
+function FormItem({ className, id: propId, ...props }: React.ComponentProps<"div">) {
+  const reactId = React.useId()
+  const stableId = React.useMemo(() => propId || reactId, [propId, reactId])
 
   return (
-    <FormItemContext.Provider value={{ id }}>
+    <FormItemContext.Provider value={{ id: stableId }}>
       <div
         data-slot="form-item"
         className={cn("grid gap-2", className)}
