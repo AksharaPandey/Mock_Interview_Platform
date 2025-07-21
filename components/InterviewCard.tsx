@@ -36,6 +36,7 @@ const InterviewCard = ({interviewId,userId,role,type,techstack,createdAt}:Interv
                 />
                 <p>{formattedDate}</p>
             </div>
+            
            </div>
           </div>
         </div>
