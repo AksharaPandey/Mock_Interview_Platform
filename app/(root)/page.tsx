@@ -1,8 +1,22 @@
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 import React from 'react'
 
 const Page = () => {
   return (
-    <div>Home Page</div>
+    <>
+     <section className='card-cta'>
+       <div className='flex flex-col gap-6 max-w-lg '>
+        <h2>Get Interview-Ready with AI-Powered Practice & Feedback</h2>
+        <p className='text-lg'>
+          Practice coding questions, receive personalized feedback, and improve your interview skills.
+        </p>
+        <Button asChild className="btn-primary w-full">
+            <Link href="/interview">Start an Interview</Link>
+        </Button>
+       </div>
+     </section>
+    </>
   )
 }
 
