@@ -1,7 +1,10 @@
 import React from 'react'
 import dayjs from 'dayjs'
 import Image from 'next/image'
-import { getRandomInterviewCover } from '@/public/utils'
+import { getRandomInterviewCover } from '@/lib/utils'
+import { Button } from './ui/button'
+import Link from 'next/link'
+import DisplayTechIcons from './DisplayTechIcons'
 const InterviewCard = ({interviewId,userId,role,type,techstack,createdAt}:InterviewCardProps) => {
     const feedback=null as Feedback | null;
     const normalizedType=/mix/gi.test(type) ? "Mixed" : type;
@@ -36,8 +39,31 @@ const InterviewCard = ({interviewId,userId,role,type,techstack,createdAt}:Interv
                 />
                 <p>{formattedDate}</p>
             </div>
-            
+            <div className='flex flex-row gap-2 items-center'>
+              <Image src='/star.svg'
+                alt='star-icon'
+                width={22}
+                height={22}
+              />
+              <p>{feedback?.totalScore || "---"}/100</p>
+
+            </div>
            </div>
+           <p className='line-clamp-2 mt-5'>
+            {feedback?.finalAssessment || "No feedback provided yet."}
+           </p>
+          </div>
+          <div className='flex flex-row justify-between'>
+            <DisplayTechIcons techStack={techstack} />
+            <Button className='btn-primary'>
+              <Link href={
+                feedback
+                  ? `/interviews/${interviewId}/feedback`
+                  : `/interviews/${interviewId}`
+              }>
+                {feedback ? "View Feedback" : "Start Interview"}
+              </Link>
+            </Button>
           </div>
         </div>
     </div>
