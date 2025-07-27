@@ -18,6 +18,11 @@ interface AgentProps {
 const Agent = ({ userName }: AgentProps) => {
   const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.INACTIVE);
   const isSpeaking = true; // Replace with actual speaking logic
+  const messages=[
+    'Whats your name?',
+    'My name is John Doe. Nice to meet you!'
+  ];
+  const lastMessage = messages[messages.length - 1];
 
   const handleCall = () => {
     setCallStatus(CallStatus.CONNECTING);
@@ -53,6 +58,16 @@ const Agent = ({ userName }: AgentProps) => {
           </div>
         </div>
       </div>
+      {messages.length > 0 && (
+        <div className="trascript-border">
+          <div className="transcript">
+            <p key={lastMessage} className={cn("transition-opacity duration-500 opacity-0",
+                "animate-fadeIn opacity-100")}>
+              {lastMessage}
+            </p>
+          </div>
+        </div>
+      )}
 
       <div className="w-full flex justify-center">
         {callStatus !== CallStatus.ACTIVE ? (
