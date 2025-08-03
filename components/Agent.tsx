@@ -59,10 +59,15 @@ const Agent = ({ userName }: AgentProps) => {
         </div>
       </div>
       {messages.length > 0 && (
-        <div className="trascript-border">
+        <div className="transcript-border">
           <div className="transcript">
-            <p key={lastMessage} className={cn("transition-opacity duration-500 opacity-0",
-                "animate-fadeIn opacity-100")}>
+            <p
+              key={lastMessage}
+              className={cn(
+                "transition-opacity duration-500 opacity-0",
+                "animate-fadeIn opacity-100"
+              )}
+            >
               {lastMessage}
             </p>
           </div>
