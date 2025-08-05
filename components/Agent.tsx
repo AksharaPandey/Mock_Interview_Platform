@@ -13,6 +13,8 @@ enum CallStatus {
 
 interface AgentProps {
   userName: string
+  userId?: string
+  type?: string
 }
 
 const Agent = ({ userName }: AgentProps) => {
