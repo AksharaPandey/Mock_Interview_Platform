@@ -12,12 +12,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  signInWithPopup,
 } from "firebase/auth";
 
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 
 import { signIn, signUp } from "@/lib/actions/auth.action";
+import { auth, googleProvider } from "@/firebase/client";
 import FormField from "./FormFeild";
 
 const authFormSchema = (type: FormType) => {
@@ -89,9 +91,46 @@ const AuthForm = ({ type }: { type: FormType }) => {
         toast.success("Signed in successfully.");
         router.push("/");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
-      toast.error(`There was an error: ${error}`);
+      toast.error(`There was an error: ${error.message || error}`);
+    }
+  };
+
+  const onGoogleSignIn = async () => {
+    try {
+      const userCredential = await signInWithPopup(auth, googleProvider);
+      
+      const idToken = await userCredential.user.getIdToken();
+      if (!idToken) {
+        toast.error("Google Sign in Failed. Please try again.");
+        return;
+      }
+
+      // We handle backend sync / cookie via signIn
+      // If it's a new sign up, `signIn` action will succeed because the session sets correctly. 
+      // We also might want to call `signUp` if we strictly require DB records, 
+      // but for now setting the session is the critical path.
+      await signUp({
+        uid: userCredential.user.uid,
+        name: userCredential.user.displayName || "Google User",
+        email: userCredential.user.email!,
+        password: "", // No password for Google
+      }).catch((e) => {
+        // If user already exists, it might return success: false, which is fine!
+        console.log("Silent signup error/exists:", e);
+      });
+
+      await signIn({
+        email: userCredential.user.email!,
+        idToken,
+      });
+
+      toast.success("Signed in with Google successfully.");
+      router.push("/");
+    } catch (error: any) {
+      console.error(error);
+      toast.error(`Google Sign in failed: ${error.message || error}`);
     }
   };
 
@@ -143,6 +182,22 @@ const AuthForm = ({ type }: { type: FormType }) => {
             </Button>
           </form>
         </Form>
+        
+        <div className="flex items-center w-full my-4">
+          <div className="flex-grow border-t border-gray-600"></div>
+          <span className="mx-4 text-gray-500 text-sm">OR</span>
+          <div className="flex-grow border-t border-gray-600"></div>
+        </div>
+
+        <Button 
+          variant="outline" 
+          type="button" 
+          onClick={onGoogleSignIn}
+          className="w-full flex gap-3 text-white border-white/20 bg-transparent hover:bg-white/10"
+        >
+          <span className="font-bold text-lg">G</span>
+          Continue with Google
+        </Button>
 
         <p className="text-center">
           {isSignIn ? "No account yet?" : "Have an account already?"}
