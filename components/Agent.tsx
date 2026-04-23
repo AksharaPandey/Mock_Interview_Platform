@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { vapi } from "@/lib/vapi.sdk";
 import { interviewer } from "@/constants";
 import { Video, VideoOff, Download } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 enum CallStatus {
   INACTIVE = "INACTIVE",
@@ -20,10 +21,12 @@ interface AgentProps {
   type?: string;
 }
 
-const Agent = ({ userName }: AgentProps) => {
+const Agent = ({ userName, interviewId }: AgentProps) => {
+  const router = useRouter();
   const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.INACTIVE);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [messages, setMessages] = useState<string[]>([]);
+  const [callError, setCallError] = useState<string | null>(null);
   
   // Phase 2: Video Recording States
   const [isWebcamOn, setIsWebcamOn] = useState(false);
@@ -134,19 +137,25 @@ const Agent = ({ userName }: AgentProps) => {
 
   const handleCall = async () => {
     setCallStatus(CallStatus.CONNECTING);
+    setCallError(null);
     try {
       // Start the Vapi call using the config from constants
       await vapi.start(interviewer);
     } catch (error) {
       console.error("Failed to start Vapi call:", error);
-      alert("Failed to start call. Ensure your VAPI token is correct and microphone permissions are granted.");
+      setCallError("Failed to start interview. Check microphone permission and VAPI key setup.");
       setCallStatus(CallStatus.INACTIVE);
     }
   };
 
   const handleDisconnect = () => {
-    vapi.stop();
-    setCallStatus(CallStatus.FINISHED);
+    try {
+      vapi.stop();
+      setCallStatus(CallStatus.FINISHED);
+    } catch (error) {
+      console.error("Failed to end call:", error);
+      setCallError("Something went wrong while ending the interview. Please try once more.");
+    }
   };
 
   return (
@@ -250,6 +259,38 @@ const Agent = ({ userName }: AgentProps) => {
           </button>
         )}
       </div>
+
+      {callError && (
+        <p className="text-sm text-red-400 text-center mt-4">{callError}</p>
+      )}
+
+      {callStatus === CallStatus.FINISHED && (
+        <div className="w-full mt-6 flex flex-wrap items-center justify-center gap-3">
+          {interviewId && (
+            <button
+              type="button"
+              onClick={() => router.push(`/interviews/${interviewId}/feedback`)}
+              className="btn-primary"
+            >
+              View Feedback
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() => router.push("/interviews/history")}
+            className="btn"
+          >
+            Past Interviews
+          </button>
+          <button
+            type="button"
+            onClick={() => router.push("/resume")}
+            className="btn"
+          >
+            Resume Intelligence
+          </button>
+        </div>
+      )}
     </>
   );
 };

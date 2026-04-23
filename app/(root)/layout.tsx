@@ -18,7 +18,7 @@ const RootLayout = async ({children}:{children:ReactNode}) => {
          
          <div className="flex items-center gap-4">
            {user ? (
-             <div className="flex items-center gap-4 bg-white/5 rounded-full pl-5 pr-2 py-1.5 border border-white/10 shadow-sm">
+            <div className="flex items-center gap-3 bg-white/5 rounded-full pl-3 pr-2 py-1.5 border border-white/10 shadow-sm">
                <Link href="/profile" className="flex items-center gap-2.5 hover:text-white transition group">
                  <div className="bg-brand-primary/20 p-1.5 rounded-full group-hover:bg-brand-primary/30 transition">
                    <UserIcon className="w-4 h-4 text-brand-primary" />

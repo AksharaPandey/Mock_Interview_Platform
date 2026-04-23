@@ -45,3 +45,14 @@ export const getRandomInterviewCover = () => {
   const randomIndex = Math.floor(Math.random() * interviewCovers.length);
   return `/covers${interviewCovers[randomIndex]}`;
 };
+
+export const getInterviewCoverById = (interviewId: string) => {
+  if (!interviewId) return getRandomInterviewCover();
+
+  const hash = interviewId
+    .split("")
+    .reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const index = hash % interviewCovers.length;
+
+  return `/covers${interviewCovers[index]}`;
+};

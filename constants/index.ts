@@ -228,3 +228,65 @@ export const dummyInterviews: Interview[] = [
     createdAt: "2024-03-14T15:30:00Z",
   },
 ];
+
+export const dummyFeedbackByInterviewId: Record<string, Feedback> = {
+  "1": {
+    id: "feedback-1",
+    interviewId: "1",
+    totalScore: 87,
+    categoryScores: [
+      {
+        name: "Communication Skills",
+        score: 89,
+        comment: "You communicated clearly and kept your answers concise.",
+      },
+      {
+        name: "Technical Knowledge",
+        score: 84,
+        comment: "Strong React fundamentals with room to deepen architecture answers.",
+      },
+      {
+        name: "Problem Solving",
+        score: 86,
+        comment: "Good approach framing and tradeoff discussion.",
+      },
+      {
+        name: "Cultural Fit",
+        score: 90,
+        comment: "Positive and collaborative style throughout the discussion.",
+      },
+      {
+        name: "Confidence and Clarity",
+        score: 85,
+        comment: "Confident delivery; could improve structure in long answers.",
+      },
+    ],
+    strengths: ["Clarity in explanation", "Frontend fundamentals", "Team-fit mindset"],
+    areasForImprovement: [
+      "System design depth",
+      "Advanced performance optimization examples",
+      "More quantifiable impact in project stories",
+    ],
+    finalAssessment:
+      "Strong overall interview. You are very close to production-ready frontend interview performance and should focus on advanced architecture storytelling.",
+    createdAt: "2024-03-16T11:30:00Z",
+  },
+};
+
+export const suggestedLearningVideos = [
+  {
+    title: "System Design Interview: Scale From 0 to 1M Users",
+    channel: "ByteByteGo",
+    url: "https://www.youtube.com/watch?v=UzLMhqg3_Wc",
+  },
+  {
+    title: "Behavioral Interview Questions and STAR Method",
+    channel: "Google Career Certificates",
+    url: "https://www.youtube.com/watch?v=ws9WCecM6g8",
+  },
+  {
+    title: "React Performance Patterns You Should Know",
+    channel: "Web Dev Simplified",
+    url: "https://www.youtube.com/watch?v=cu_hd4f1RVs",
+  },
+];

@@ -1,12 +1,15 @@
 import React from 'react'
 import dayjs from 'dayjs'
 import Image from 'next/image'
-import { getRandomInterviewCover } from '@/lib/utils'
+import { getInterviewCoverById } from '@/lib/utils'
 import { Button } from './ui/button'
 import Link from 'next/link'
 import DisplayTechIcons from './DisplayTechIcons'
-const InterviewCard = ({interviewId,userId,role,type,techstack,createdAt}:InterviewCardProps) => {
-    const feedback=null as Feedback | null;
+import { dummyFeedbackByInterviewId } from '@/constants'
+
+const InterviewCard = ({ id, interviewId, role, type, techstack, createdAt, showFeedbackDetails = false }: InterviewCardProps) => {
+    const resolvedInterviewId = interviewId || id || "";
+    const feedback = resolvedInterviewId ? dummyFeedbackByInterviewId[resolvedInterviewId] ?? null : null;
     const normalizedType=/mix/gi.test(type) ? "Mixed" : type;
     const formattedDate=dayjs(
         feedback?.createdAt || createdAt || Date.now()
@@ -20,7 +23,7 @@ const InterviewCard = ({interviewId,userId,role,type,techstack,createdAt}:Interv
             </div>
 
             <Image
-            src={getRandomInterviewCover()}
+            src={getInterviewCoverById(resolvedInterviewId)}
             alt="cover-image"
             width={90}
             height={90}
@@ -45,7 +48,7 @@ const InterviewCard = ({interviewId,userId,role,type,techstack,createdAt}:Interv
                 width={22}
                 height={22}
               />
-              <p>{feedback?.totalScore || "---"}/100</p>
+              <p>{showFeedbackDetails ? `${feedback?.totalScore || "--"}/100` : "---/100"}</p>
 
             </div>
            </div>
@@ -57,11 +60,11 @@ const InterviewCard = ({interviewId,userId,role,type,techstack,createdAt}:Interv
             <DisplayTechIcons techStack={techstack} />
             <Button className='btn-primary'>
               <Link href={
-                feedback
-                  ? `/interviews/${interviewId}/feedback`
-                  : `/interviews/${interviewId}`
+                showFeedbackDetails && feedback
+                  ? `/interviews/${resolvedInterviewId}/feedback`
+                  : `/interviews/${resolvedInterviewId}`
               }>
-                {feedback ? "View Feedback" : "Start Interview"}
+                {showFeedbackDetails && feedback ? "Read Feedback" : "Start Interview"}
               </Link>
             </Button>
           </div>

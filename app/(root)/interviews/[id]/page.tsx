@@ -43,6 +43,7 @@ export default async function InterviewPage({ params }: { params: Promise<{ id: 
              <Agent 
                userName={user?.name || "Candidate"} 
                userId={user?.id || "anonymous"} 
+               interviewId={interview.id}
                type={interview.type} 
              />
           </div>
