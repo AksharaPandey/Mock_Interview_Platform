@@ -25,10 +25,10 @@ const Page = () => {
            className="hidden max-md:hidden md:block"
          />
      </section>
-     <section className='flex flex-col gap-6 mt-8'>
+      <section className='flex flex-col gap-6 mt-8'>
       <h2>Your Interviews</h2>
-      <div className="interviews-section">
-          {dummyInterviews.map((interview)=>(
+      <div className="grid grid-cols-1 gap-6 w-full max-w-xl">
+          {dummyInterviews.slice(0, 3).map((interview)=>(
             <InterviewCard {...interview} key={
               interview.id
             }/>
@@ -37,8 +37,8 @@ const Page = () => {
      </section>
      <section className='flex flex-col gap-6 mt-8'>
       <h2>Take an Interview</h2>
-      <div className='interviews-section'>
-      {dummyInterviews.map((interview)=>(
+      <div className='grid grid-cols-1 gap-6 w-full max-w-xl'>
+      {dummyInterviews.slice(0, 3).map((interview)=>(
             <InterviewCard {...interview} key={
               interview.id
             }/>
