@@ -19,7 +19,7 @@ import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 
 import { signIn, signUp } from "@/lib/actions/auth.action";
-import { auth, googleProvider } from "@/firebase/client";
+import { googleProvider } from "@/firebase/client";
 import FormField from "./FormFeild";
 
 const authFormSchema = (type: FormType) => {

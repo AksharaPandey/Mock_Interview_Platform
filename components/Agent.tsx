@@ -168,8 +168,9 @@ const Agent = ({ userName }: AgentProps) => {
                 ref={videoRef} 
                 autoPlay 
                 muted 
+                playsInline
                 className={cn(
-                  "w-[120px] h-[120px] rounded-full object-cover bg-black/10 flex items-center justify-center",
+                  "w-[120px] h-[120px] rounded-full object-cover bg-black/10 flex items-center justify-center -scale-x-100",
                   !isWebcamOn && "hidden"
                 )}
               />
