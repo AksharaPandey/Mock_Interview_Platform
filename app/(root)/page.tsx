@@ -27,7 +27,7 @@ const Page = () => {
      </section>
       <section className='flex flex-col gap-6 mt-8'>
       <h2>Your Interviews</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 w-full">
+      <div className="grid grid-cols-1 gap-6 w-full">
           {dummyInterviews.slice(0, 3).map((interview)=>(
             <InterviewCard {...interview} key={
               interview.id
@@ -37,8 +37,8 @@ const Page = () => {
      </section>
      <section className='flex flex-col gap-6 mt-8'>
       <h2>Take an Interview</h2>
-      <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 w-full'>
-      {dummyInterviews.slice(0, 3).map((interview)=>(
+      <div className='grid grid-cols-1 gap-6 w-full'>
+      {dummyInterviews.slice(0, 4).map((interview)=>(
             <InterviewCard {...interview} key={
               interview.id
             }/>
