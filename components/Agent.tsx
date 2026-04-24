@@ -137,9 +137,14 @@ const Agent = ({ userName, interviewId }: AgentProps) => {
   };
 
   const handleCall = async () => {
+    if (callStatus === CallStatus.CONNECTING || callStatus === CallStatus.ACTIVE) return;
+    
     setCallStatus(CallStatus.CONNECTING);
     setCallError(null);
     try {
+      // Ensure any previous session is fully stopped
+      await vapi.stop();
+      
       // Start the Vapi call using the config from constants
       await vapi.start(interviewer);
     } catch (error) {
@@ -149,9 +154,9 @@ const Agent = ({ userName, interviewId }: AgentProps) => {
     }
   };
 
-  const handleDisconnect = () => {
+  const handleDisconnect = async () => {
     try {
-      vapi.stop();
+      await vapi.stop();
       setCallStatus(CallStatus.FINISHED);
     } catch (error) {
       console.error("Failed to end call:", error);

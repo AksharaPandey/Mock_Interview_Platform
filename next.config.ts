@@ -1,13 +1,13 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
-  eslint:{
-    ignoreDuringBuilds: true, // Ignore ESLint errors during build
+  eslint: {
+    ignoreDuringBuilds: true,
   },
   typescript: {
-    ignoreBuildErrors: true, // Ignore TypeScript errors during build
-  }
+    ignoreBuildErrors: true,
+  },
+  serverExternalPackages: ["pdf2json", "mammoth"], // ✅ Add this line
 };
 
 export default nextConfig;

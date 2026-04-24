@@ -8,7 +8,7 @@ import {
   Home, 
   Video, 
   MessageSquare, 
-  User, 
+  User as UserIcon, 
   FileText, 
   Briefcase, 
   BookOpen,
@@ -23,13 +23,14 @@ const navItems = [
     group: "Dashboard",
     items: [
       { label: "Home", icon: Home, href: "/" },
-      { label: "Interviews", icon: Video, href: "/interviews" },
+      { label: "Interviews", icon: Video, href: "/interview" },
     ]
   },
   {
     group: "Contents",
     items: [
-      { label: "Feedback", icon: MessageSquare, href: "/interviews" },
+      { label: "History", icon: Video, href: "/interviews/history" },
+      { label: "Feedback", icon: MessageSquare, href: "/interviews/history" },
       { label: "Resume", icon: FileText, href: "/resume" },
       { label: "Career", icon: Briefcase, href: "/career" },
       { label: "Courses", icon: BookOpen, href: "/courses" },
@@ -38,13 +39,13 @@ const navItems = [
   {
     group: "Account",
     items: [
-      { label: "Profile", icon: User, href: "/profile" },
+      { label: "Profile", icon: UserIcon, href: "/profile" },
       { label: "Settings", icon: Settings, href: "/settings" },
     ]
   }
 ];
 
-const Sidebar = () => {
+const Sidebar = ({ user }: { user?: User | null }) => {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(true);
 
@@ -55,6 +56,9 @@ const Sidebar = () => {
       collapsed ? "80px" : "288px"
     );
   }, [collapsed]);
+
+  // No longer need this manual map as we updated navItems directly
+  const updatedNavItems = navItems;
 
   return (
     <aside 
@@ -91,7 +95,7 @@ const Sidebar = () => {
 
       {/* Navigation Groups */}
       <div className="flex-1 overflow-y-auto px-3 py-6 space-y-9 scrollbar-hide">
-        {navItems.map((group) => (
+        {updatedNavItems.map((group) => (
           <div key={group.group} className="space-y-4">
             {!collapsed && (
               <h3 className="text-[10px] font-black text-gray-500 uppercase tracking-[0.25em] px-3">
@@ -143,21 +147,30 @@ const Sidebar = () => {
       {/* Profile Shortcut / Settings */}
       <div className="p-4 mt-auto">
         <div className={cn(
-          "bg-[#1A1C20] border border-white/5 rounded-2xl flex items-center transition-all cursor-pointer group hover:border-brand-primary/30",
+          "bg-[#1A1C20] border border-white/5 rounded-2xl flex items-center transition-all group hover:border-brand-primary/30",
           collapsed ? "p-2 justify-center" : "p-3 justify-between gap-3"
         )}>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 min-w-10 rounded-full bg-gradient-to-tr from-brand-primary to-primary-100 flex-center shrink-0">
-              <User className="w-5 h-5 text-dark-100" />
+          <Link href="/profile" className="flex items-center gap-3 flex-1 overflow-hidden">
+            <div className="w-10 h-10 min-w-10 rounded-full bg-gradient-to-tr from-brand-primary to-primary-100 flex items-center justify-center shrink-0">
+              <UserIcon className="w-5 h-5 text-dark-100" />
             </div>
             {!collapsed && (
               <div className="flex flex-col overflow-hidden">
-                <span className="text-sm font-bold text-white whitespace-nowrap truncate">Guest User</span>
-                <span className="text-[10px] text-gray-500 font-medium whitespace-nowrap">Free Plan</span>
+                <span className="text-sm font-bold text-white whitespace-nowrap truncate">
+                  {user?.name || (user as any)?.displayName || "Guest User"}
+                </span>
+                <span className="text-[10px] text-brand-primary font-black uppercase tracking-tighter">
+                  {user ? "Pro Member" : "Free Plan"}
+                </span>
               </div>
             )}
-          </div>
-          {!collapsed && <Settings className="w-4 h-4 text-gray-600 group-hover:text-white transition-colors" />}
+          </Link>
+          <Link href="/settings" className="p-1 hover:bg-white/5 rounded-md transition-colors">
+            <Settings className={cn(
+              "w-4 h-4 transition-colors",
+              collapsed ? "text-gray-400" : "text-gray-600 group-hover:text-white"
+            )} />
+          </Link>
         </div>
       </div>
     </aside>

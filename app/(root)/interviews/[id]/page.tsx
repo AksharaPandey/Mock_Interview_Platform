@@ -1,6 +1,7 @@
 import React from "react";
 import Agent from "@/components/Agent";
 import { getCurrentUser } from "@/lib/actions/auth.action";
+import { db } from "@/firebase/admin";
 import { dummyInterviews } from "@/constants";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
@@ -10,7 +11,25 @@ export default async function InterviewPage({ params }: { params: Promise<{ id: 
   const resolveParams = await params;
   const interviewId = resolveParams.id;
   
-  const interview = dummyInterviews.find(i => i.id === interviewId);
+  // Fetch interview from Firestore
+  let interview = null;
+  try {
+    const doc = await db.collection("interviews").doc(interviewId).get();
+    if (doc.exists) {
+      const data = doc.data();
+      interview = {
+        id: doc.id,
+        ...data,
+      } as Interview;
+    }
+  } catch (error) {
+    console.error("Error fetching interview:", error);
+  }
+
+  // Fallback to dummy data if not found in Firestore (for backward compatibility)
+  if (!interview) {
+    interview = dummyInterviews.find(i => i.id === interviewId);
+  }
   
   if (!interview) {
     return (

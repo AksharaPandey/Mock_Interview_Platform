@@ -54,13 +54,16 @@ const ResumeAnalyzer = () => {
       });
 
       const payload = await response.json();
+      console.log("Resume analysis response:", payload);
 
       if (!response.ok || !payload.success) {
+        console.error("Analysis failed:", payload);
         throw new Error(payload.error || "Failed to analyze resume.");
       }
 
       setResult(payload.data);
     } catch (e) {
+      console.error("Resume analyzer caught error:", e);
       const message = e instanceof Error ? e.message : "Failed to analyze resume.";
       setError(message);
       setResult(null);
@@ -102,9 +105,8 @@ const ResumeAnalyzer = () => {
               const file = event.dataTransfer.files?.[0] || null;
               onFilePicked(file);
             }}
-            className={`mb-3 rounded-lg border border-dashed p-4 text-center transition ${
-              dragActive ? "border-brand-primary bg-brand-primary/10" : "border-gray-700 bg-[#0f1013]"
-            }`}
+            className={`mb-3 rounded-lg border border-dashed p-4 text-center transition ${dragActive ? "border-brand-primary bg-brand-primary/10" : "border-gray-700 bg-[#0f1013]"
+              }`}
           >
             <p className="text-sm text-gray-300">Drag and drop your resume here</p>
             <p className="text-xs text-gray-500 mt-1">or select file manually below</p>

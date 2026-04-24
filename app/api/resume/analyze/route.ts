@@ -1,7 +1,9 @@
 import mammoth from "mammoth";
-import { PDFParse } from "pdf-parse";
+import PDFParser from "pdf2json";
 import { generateText } from "ai";
 import { google } from "@ai-sdk/google";
+
+
 
 export const runtime = "nodejs";
 
@@ -63,12 +65,29 @@ const extractResumeText = async (file: File) => {
   const mime = file.type.toLowerCase();
   const extension = file.name.toLowerCase().split(".").pop();
 
+  // ✅ Replace with this
   if (mime.includes("pdf") || extension === "pdf") {
-    const parser = new PDFParse({ data: buffer });
-    const parsed = await parser.getText();
-    return parsed.text || "";
-  }
+    try {
+      const text = await new Promise<string>((resolve, reject) => {
+        const parser = new PDFParser(null, true);
 
+        parser.on("pdfParser_dataReady", () => {
+          resolve(parser.getRawTextContent());
+        });
+
+        parser.on("pdfParser_dataError", (err: unknown) => {
+          reject(new Error("PDF parsing failed: " + String(err)));
+        });
+
+        parser.parseBuffer(buffer);
+      });
+
+      return text.trim();
+    } catch (error) {
+      console.error("pdf2json extraction failed:", error);
+      throw new Error("Failed to extract text from PDF.");
+    }
+  }
   if (
     mime.includes("officedocument.wordprocessingml.document") ||
     extension === "docx"

@@ -11,7 +11,7 @@ const RootLayout = async ({children}:{children:ReactNode}) => {
   return (
     <div className="min-h-screen bg-dark-100 text-white selection:bg-brand-primary/30 font-mona-sans">
       {/* Fixed Sidebar */}
-      <Sidebar />
+      <Sidebar user={user} />
 
       {/* Main Content Area */}
       <div className="flex flex-col min-h-screen transition-all duration-300 ease-in-out" style={{ paddingLeft: 'var(--sidebar-width)' }}>
@@ -37,7 +37,7 @@ const RootLayout = async ({children}:{children:ReactNode}) => {
 
             {user ? (
                <div className="flex items-center gap-3 bg-white/5 rounded-2xl pl-3 pr-2 py-1.5 border border-white/10 shadow-sm hover:bg-white/10 transition-all">
-                  <Link href="/profile" className="flex items-center gap-3 group">
+                  <Link href="/profile-old" className="flex items-center gap-3 group">
                     <div className="relative">
                       <div className="absolute inset-0 bg-brand-primary/20 blur-md rounded-full"></div>
                       <div className="bg-brand-primary/20 p-2 rounded-xl group-hover:bg-brand-primary/30 transition relative z-10">

@@ -9,7 +9,7 @@ const InterviewHistoryPage = () => {
         Review your previous interviews, scores, and feedback reports.
       </p>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 w-full">
+      <div className="flex flex-col gap-6 w-full">
         {dummyInterviews.map((interview) => (
           <InterviewCard
             {...interview}
