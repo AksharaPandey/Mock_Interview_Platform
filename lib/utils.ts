@@ -13,32 +13,16 @@ const normalizeTechName = (tech: string) => {
   return mappings[key as keyof typeof mappings];
 };
 
-const checkIconExists = async (url: string) => {
-  try {
-    const response = await fetch(url, { method: "HEAD" });
-    return response.ok; // Returns true if the icon exists
-  } catch {
-    return false;
-  }
-};
-
-export const getTechLogos = async (techArray: string[]) => {
-  const logoURLs = techArray.map((tech) => {
+export const getTechLogos = (techArray: string[]) => {
+  return techArray.map((tech) => {
     const normalized = normalizeTechName(tech);
     return {
       tech,
-      url: `${techIconBaseURL}/${normalized}/${normalized}-original.svg`,
+      url: normalized 
+        ? `${techIconBaseURL}/${normalized}/${normalized}-original.svg` 
+        : "/tech.svg",
     };
   });
-
-  const results = await Promise.all(
-    logoURLs.map(async ({ tech, url }) => ({
-      tech,
-      url: (await checkIconExists(url)) ? url : "/tech.svg",
-    }))
-  );
-
-  return results;
 };
 
 export const getRandomInterviewCover = () => {
@@ -46,10 +30,20 @@ export const getRandomInterviewCover = () => {
   return `/covers${interviewCovers[randomIndex]}`;
 };
 
-export const getInterviewCoverById = (interviewId: string) => {
-  if (!interviewId) return getRandomInterviewCover();
+export const getInterviewCoverById = (interviewId: string, role?: string) => {
+  if (!interviewId && !role) return getRandomInterviewCover();
 
-  const hash = interviewId
+  // Try to match by role name (e.g. "Reddit Interview" -> "/covers/reddit.png")
+  if (role) {
+    const roleLower = role.toLowerCase();
+    const matchingCover = interviewCovers.find(cover => 
+      roleLower.includes(cover.replace("/", "").replace(".png", ""))
+    );
+    if (matchingCover) return `/covers${matchingCover}`;
+  }
+
+  // Fallback to hashing the ID
+  const hash = (interviewId || "default")
     .split("")
     .reduce((acc, char) => acc + char.charCodeAt(0), 0);
   const index = hash % interviewCovers.length;

@@ -5,7 +5,7 @@ import React from "react";
 import { cn } from "@/lib/utils";
 import { vapi } from "@/lib/vapi.sdk";
 import { interviewer } from "@/constants";
-import { Video, VideoOff, Download } from "lucide-react";
+import { Video, VideoOff, Download, User as UserIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 enum CallStatus {
@@ -167,41 +167,53 @@ const Agent = ({ userName, interviewId }: AgentProps) => {
   return (
     <>
       <div className="call-view">
-        <div className="card-interviewer w-[280px]">
-          <div className="avatar">
-            <Image src="/ai-avatar.png" alt="vapi" width={65} height={54} className="object-cover" />
+        <div className="card-interviewer">
+          <div className="avatar h-20 w-20">
+            <Image 
+              src="/ai-interviewer.png" 
+              alt="Sarah" 
+              width={80} 
+              height={80} 
+              className={cn(
+                "rounded-full object-cover w-full h-full transition-all duration-500",
+                isSpeaking && "scale-105 brightness-110"
+              )} 
+            />
             {isSpeaking && <span className="animate-speak" />}
           </div>
-          <h3>AI Interviewer</h3>
+          <h3 className="text-lg">Sarah (AI Interviewer)</h3>
         </div>
 
-        <div className="card-border w-[280px]">
+        <div className="card-border">
           <div className="card-content flex flex-col items-center">
 
             <div className="relative group">
-              <video
-                ref={videoRef}
-                autoPlay
-                muted
-                playsInline
-                className={cn(
-                  "w-[120px] h-[120px] rounded-full object-cover bg-black/10 flex items-center justify-center -scale-x-100",
-                  !isWebcamOn && "hidden"
+              <div className={cn(
+                "w-[120px] h-[120px] rounded-full overflow-hidden bg-dark-200",
+                !isWebcamOn && "flex items-center justify-center border-none"
+              )}>
+                {isWebcamOn ? (
+                  <video
+                    ref={videoRef}
+                    autoPlay
+                    muted
+                    playsInline
+                    className="w-full h-full object-cover -scale-x-100"
+                  />
+                ) : (
+                  <Image
+                    src="/user-profile.jpeg"
+                    alt="profile-image"
+                    width={120}
+                    height={120}
+                    className="rounded-full object-cover"
+                  />
                 )}
-              />
-              {!isWebcamOn && (
-                <Image
-                  src="/user-profile.jpeg"
-                  alt="profile-image"
-                  width={120}
-                  height={120}
-                  className="rounded-full object-cover"
-                />
-              )}
+              </div>
 
               <button
                 onClick={toggleWebcam}
-                className="absolute bottom-0 right-0 bg-gray-800 p-2 rounded-full border border-gray-600 hover:bg-gray-700 transition"
+                className="absolute bottom-0 right-0 bg-gray-800 p-2 rounded-full border border-gray-600 hover:bg-gray-700 transition z-10"
               >
                 {isWebcamOn ? (
                   <VideoOff className="w-4 h-4 text-white" />
@@ -216,8 +228,8 @@ const Agent = ({ userName, interviewId }: AgentProps) => {
             {recordedVideoUrl && callStatus === CallStatus.FINISHED && (
               <a
                 href={recordedVideoUrl}
-                download={`interview-recording-${new Date().toISOString().split('T')[0]}.webm`}
-                className="mt-2 flex items-center gap-2 text-xs bg-brand-primary text-white px-3 py-1.5 rounded-md hover:bg-brand-primary/90 transition"
+                download="interview-recording.webm"
+                className="mt-6 flex items-center gap-2 text-xs bg-brand-primary text-dark-100 font-bold px-4 py-2 rounded-full hover:bg-brand-primary/90 transition shadow-lg"
               >
                 <Download className="w-3 h-3" />
                 Download Recording
@@ -229,7 +241,7 @@ const Agent = ({ userName, interviewId }: AgentProps) => {
       </div>
 
       {messages.length > 0 && (
-        <div className="transcript-border">
+        <div className="transcript-border mt-8">
           <div className="transcript">
             <p
               key={lastMessage}
@@ -244,9 +256,9 @@ const Agent = ({ userName, interviewId }: AgentProps) => {
         </div>
       )}
 
-      <div className="w-full flex justify-center">
+      <div className="w-full flex justify-center mt-10">
         {callStatus !== CallStatus.ACTIVE ? (
-          <button className="relative btn-call" onClick={handleCall}>
+          <button className="relative btn-call" onClick={handleCall} disabled={callStatus === CallStatus.CONNECTING}>
             <span
               className={cn(
                 "absolute animate-ping rounded-full opacity-75",
@@ -261,17 +273,17 @@ const Agent = ({ userName, interviewId }: AgentProps) => {
           </button>
         ) : (
           <button className="btn-disconnect" onClick={handleDisconnect}>
-            End
+            End Interview
           </button>
         )}
       </div>
 
       {callError && (
-        <p className="text-sm text-red-400 text-center mt-4">{callError}</p>
+        <p className="text-sm text-red-500 text-center mt-6 font-medium">{callError}</p>
       )}
 
       {callStatus === CallStatus.FINISHED && (
-        <div className="w-full mt-6 flex flex-wrap items-center justify-center gap-3">
+        <div className="w-full mt-10 flex flex-wrap items-center justify-center gap-4">
           {interviewId && (
             <button
               type="button"
@@ -284,16 +296,9 @@ const Agent = ({ userName, interviewId }: AgentProps) => {
           <button
             type="button"
             onClick={() => router.push("/interviews/history")}
-            className="btn"
+            className="btn-secondary"
           >
-            Past Interviews
-          </button>
-          <button
-            type="button"
-            onClick={() => router.push("/resume")}
-            className="btn"
-          >
-            Resume Intelligence
+            History
           </button>
         </div>
       )}

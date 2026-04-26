@@ -1,9 +1,10 @@
-import Image from "next/image";
+"use client";
 
+import Image from "next/image";
 import { cn, getTechLogos } from "@/lib/utils";
 
-const DisplayTechIcons = async ({ techStack }: TechIconProps) => {
-  const techIcons = await getTechLogos(techStack);
+const DisplayTechIcons = ({ techStack }: { techStack: string[] }) => {
+  const techIcons = getTechLogos(techStack);
 
   return (
     <div className="flex flex-row">
@@ -11,18 +12,21 @@ const DisplayTechIcons = async ({ techStack }: TechIconProps) => {
         <div
           key={tech}
           className={cn(
-            "relative group bg-dark-300 rounded-full p-2 flex flex-center",
+            "relative group bg-dark-300 rounded-full p-2 flex items-center justify-center border border-white/5",
             index >= 1 && "-ml-3"
           )}
         >
           <span className="tech-tooltip">{tech}</span>
 
-          <Image
+          <img
             src={url}
             alt={tech}
-            width={100}
-            height={100}
+            width={20}
+            height={20}
             className="size-5"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = "/tech.svg";
+            }}
           />
         </div>
       ))}

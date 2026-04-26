@@ -17,6 +17,7 @@ import {
   ChevronLeft
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useUser } from "@/contexts/UserContext";
 
 const navItems = [
   {
@@ -30,7 +31,7 @@ const navItems = [
     group: "Contents",
     items: [
       { label: "History", icon: Video, href: "/interviews/history" },
-      { label: "Feedback", icon: MessageSquare, href: "/interviews/history" },
+      { label: "Feedback", icon: MessageSquare, href: "/interviews/feedback" },
       { label: "Resume", icon: FileText, href: "/resume" },
       { label: "Career", icon: Briefcase, href: "/career" },
       { label: "Courses", icon: BookOpen, href: "/courses" },
@@ -45,8 +46,14 @@ const navItems = [
   }
 ];
 
-const Sidebar = ({ user }: { user?: User | null }) => {
+interface SidebarProps {
+  user?: any;
+}
+
+const Sidebar = ({ user: propUser }: SidebarProps) => {
   const pathname = usePathname();
+  const { user: globalUser } = useUser();
+  const user = globalUser || propUser;
   const [collapsed, setCollapsed] = useState(true);
 
   // Sync sidebar width to a CSS variable for the layout to respond
@@ -63,7 +70,7 @@ const Sidebar = ({ user }: { user?: User | null }) => {
   return (
     <aside 
       className={cn(
-        "fixed left-0 top-0 h-screen bg-dark-200 border-r border-white/5 flex flex-col z-50 shadow-2xl transition-all duration-300 ease-in-out",
+        "fixed left-0 top-0 h-screen bg-dark-200 border-r border-border flex flex-col z-50 shadow-2xl transition-all duration-300 ease-in-out",
         collapsed ? "w-20" : "w-72"
       )}
     >
@@ -74,15 +81,15 @@ const Sidebar = ({ user }: { user?: User | null }) => {
       )}>
         {!collapsed && (
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="bg-brand-primary p-2 rounded-xl shadow-lg shadow-brand-primary/20 group-hover:scale-110 transition-transform duration-300">
-              <Image src="/logo.svg" alt="logo" height={22} width={26} className="brightness-0 invert" />
+            <div className="bg-brand-primary p-1.5 rounded-lg shadow-lg shadow-brand-primary/20 group-hover:scale-110 transition-transform duration-300">
+              <Image src="/logo.svg" alt="logo" height={16} width={18} className="brightness-0 invert" />
             </div>
-            <h2 className="text-xl font-bold text-white tracking-tight group-hover:text-brand-primary transition-colors whitespace-nowrap">AlgoPanel</h2>
+            <h2 className="text-lg font-bold text-foreground tracking-tight group-hover:text-brand-primary transition-colors whitespace-nowrap">AlgoPanel</h2>
           </Link>
         )}
         {collapsed && (
-          <div className="bg-brand-primary p-2 rounded-xl shadow-lg shadow-brand-primary/20">
-            <Image src="/logo.svg" alt="logo" height={20} width={24} className="brightness-0 invert" />
+          <div className="bg-brand-primary p-1.5 rounded-lg shadow-lg shadow-brand-primary/20">
+            <Image src="/logo.svg" alt="logo" height={16} width={18} className="brightness-0 invert" />
           </div>
         )}
         <button 
@@ -114,8 +121,8 @@ const Sidebar = ({ user }: { user?: User | null }) => {
                       "flex items-center px-3 py-3 rounded-xl transition-all duration-300 group relative overflow-hidden",
                       collapsed ? "justify-center" : "justify-start gap-4",
                       isActive 
-                        ? "bg-brand-primary/10 text-white border border-brand-primary/20" 
-                        : "text-gray-400 hover:text-white hover:bg-white/5 border border-transparent"
+                        ? "bg-brand-primary/10 text-foreground border border-brand-primary/20" 
+                        : "text-light-100 hover:text-foreground hover:bg-white/5 border border-transparent"
                     )}
                   >
                     <div className="flex items-center gap-3.5 z-10 shrink-0">
@@ -127,7 +134,7 @@ const Sidebar = ({ user }: { user?: User | null }) => {
                     {!collapsed && (
                       <span className={cn(
                         "text-[14.5px] font-bold tracking-tight transition-colors duration-300 whitespace-nowrap",
-                        isActive ? "text-white" : "text-gray-400 group-hover:text-white"
+                        isActive ? "text-foreground" : "text-light-100 group-hover:text-foreground"
                       )}>{item.label}</span>
                     )}
                     
@@ -147,20 +154,29 @@ const Sidebar = ({ user }: { user?: User | null }) => {
       {/* Profile Shortcut / Settings */}
       <div className="p-4 mt-auto">
         <div className={cn(
-          "bg-[#1A1C20] border border-white/5 rounded-2xl flex items-center transition-all group hover:border-brand-primary/30",
+          "bg-dark-200 border border-border rounded-2xl flex items-center transition-all group hover:border-brand-primary/30",
           collapsed ? "p-2 justify-center" : "p-3 justify-between gap-3"
         )}>
-          <Link href="/profile" className="flex items-center gap-3 flex-1 overflow-hidden">
-            <div className="w-10 h-10 min-w-10 rounded-full bg-gradient-to-tr from-brand-primary to-primary-100 flex items-center justify-center shrink-0">
-              <UserIcon className="w-5 h-5 text-dark-100" />
+          <Link
+            href="/profile"
+            className={cn(
+              "flex items-center gap-4 rounded-2xl hover:bg-white/5 transition-all group overflow-hidden",
+              collapsed ? "p-1 justify-center" : "px-4 py-3"
+            )}
+          >
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-primary to-primary-100 flex items-center justify-center p-0.5 shrink-0 group-hover:scale-105 transition-transform overflow-hidden">
+               <div className="w-full h-full rounded-lg bg-dark-300 flex items-center justify-center text-brand-primary font-bold overflow-hidden">
+                {user?.image ? (
+                  <img src={user.image} alt="profile" className="w-full h-full object-cover" />
+                ) : (
+                  <UserIcon size={20} />
+                )}
+               </div>
             </div>
             {!collapsed && (
               <div className="flex flex-col overflow-hidden">
-                <span className="text-sm font-bold text-white whitespace-nowrap truncate">
-                  {user?.name || (user as any)?.displayName || "Guest User"}
-                </span>
-                <span className="text-[10px] text-brand-primary font-black uppercase tracking-tighter">
-                  {user ? "Pro Member" : "Free Plan"}
+                <span className="text-sm font-bold text-foreground whitespace-nowrap truncate">
+                  {user?.name || "Guest User"}
                 </span>
               </div>
             )}

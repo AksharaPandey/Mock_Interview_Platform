@@ -101,3 +101,13 @@ interface InterviewFormProps {
 interface TechIconProps {
   techStack: string[];
 }
+
+interface AppNotification {
+  id: string;
+  title: string;
+  message: string;
+  type: 'interview' | 'feedback' | 'system' | 'resume';
+  createdAt: string;
+  isRead: boolean;
+  link?: string;
+}

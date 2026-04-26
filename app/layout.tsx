@@ -13,19 +13,30 @@ export const metadata: Metadata = {
   description: "An AI-powered platform for preparing for mock interviews.",
 };
 
+import { ThemeProvider } from "@/components/ThemeProvider";
+import { UserProvider } from "@/contexts/UserContext";
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${monaSans.className} antialiased pattern`}
       >
-        {children}
-
-        <Toaster/>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <UserProvider initialUser={null}>
+            {children}
+            <Toaster />
+          </UserProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

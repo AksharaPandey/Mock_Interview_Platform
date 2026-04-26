@@ -26,16 +26,16 @@ const InterviewCard = ({ id, interviewId, role, type, techstack, createdAt, show
 
                 {/* Cover Image */}
                 <Image
-                  src={getInterviewCoverById(resolvedInterviewId)}
+                  src={getInterviewCoverById(resolvedInterviewId, role)}
                   alt="cover-image"
-                  width={90}
-                  height={90}
-                  className="rounded-full object-cover size-[90px] border border-white/5 shrink-0"
+                  width={70}
+                  height={70}
+                  className="rounded-full object-cover size-[70px] border border-white/5 shrink-0"
                 />
 
                 {/* Content Area */}
                 <div className='flex-1 flex flex-col gap-3'>
-                    <h3 className='capitalize text-xl font-bold text-white'>
+                    <h3 className='capitalize text-xl font-bold text-foreground'>
                         {role} Interview
                     </h3>
                     

@@ -46,7 +46,7 @@ const ProfileOldPage = async () => {
               </div>
               <div className="flex justify-between text-xs">
                 <span className="text-gray-500 font-bold uppercase">Member Since</span>
-                <span className="text-gray-300">April 24, 2024</span>
+                <span className="text-gray-300">April 24, 2026</span>
               </div>
             </div>
           </div>
